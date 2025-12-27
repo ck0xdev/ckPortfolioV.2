@@ -1,13 +1,37 @@
-import Hero from '@/components/Hero'
+import type { Metadata } from "next";
+import { Playfair_Display, Manrope } from "next/font/google";
+import SmoothScroll from "@/components/SmoothScroll";
+import MouseTracker from "@/components/MouseTracker"; // <--- Import this
+import "./globals.css";
 
-export default function Home() {
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+});
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-manrope",
+});
+
+export const metadata: Metadata = {
+  title: "CK | Immersive Portfolio",
+  description: "Front-End Developer & UI/UX Designer",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <main className="bg-rich-black min-h-[200vh]">
-      <Hero />
-      {/* This empty space is just so you can scroll and test the parallax */}
-      <div className="h-screen w-full flex items-center justify-center text-gray-500 font-sans">
-        <p>Keep scrolling to test the smooth motion...</p>
-      </div>
-    </main>
-  )
+    <html lang="en">
+      <body className={`${playfair.variable} ${manrope.variable} bg-rich-black text-soft-cream`}>
+        <SmoothScroll>
+          <MouseTracker /> {/* <--- Add it here, inside SmoothScroll or outside, doesn't matter */}
+          {children}
+        </SmoothScroll>
+      </body>
+    </html>
+  );
 }

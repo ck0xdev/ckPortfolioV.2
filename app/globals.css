@@ -9,12 +9,18 @@
 }
 
 body {
+  cursor: none; /* <--- Hides the default cursor everywhere */
   background-color: var(--bg-color);
   color: var(--text-color);
   margin: 0;
   padding: 0;
   overflow-x: hidden; /* Hide horizontal scrollbar */
   -webkit-font-smoothing: antialiased;
+}
+
+/* Ensure links and buttons also hide the cursor */
+a, button, input, textarea {
+  cursor: none;
 }
 
 /* Hide scrollbar for Chrome/Safari/Opera */
@@ -26,4 +32,33 @@ body::-webkit-scrollbar {
 body {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
+}
+
+/* File: app/globals.css */
+
+/* Reset defaults */
+* {
+  box-sizing: border-box;
+  cursor: none; /* Optional: Hides the default Windows/Mac arrow cursor */
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #111; /* Dark background so white dot shows */
+  color: #fff;
+}
+
+/* The Cursor Dot Styles */
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 12px; /* Adjust size */
+  height: 12px;
+  background-color: white; /* Dot color */
+  border-radius: 50%;
+  pointer-events: none; /* CRITICAL: Lets you click through the dot */
+  z-index: 9999; /* Ensures it stays on top of everything */
+  transform: translate(-50%, -50%); /* Centers the dot on the mouse tip */
 }

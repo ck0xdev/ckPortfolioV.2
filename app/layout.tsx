@@ -1,37 +1,38 @@
-import type { Metadata } from "next";
+// File: app/layout.js
 import { Playfair_Display, Manrope } from "next/font/google";
-import SmoothScroll from "@/components/SmoothScroll";
 import "./globals.css";
+import Cursor from "./components/Cursor"; // Import the cursor we just made
 
-// 1. Configure the fonts
+// Configure fonts
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair",
+  display: "swap",
 });
 
 const manrope = Manrope({
   subsets: ["latin"],
   variable: "--font-manrope",
+  display: "swap",
 });
 
-// 2. Define Metadata (SEO)
-export const metadata: Metadata = {
-  title: "CK | Immersive Portfolio",
-  description: "Front-End Developer & UI/UX Designer",
+export const metadata = {
+  title: "My Portfolio",
+  description: "Immersive portfolio created with Next.js and GSAP",
 };
 
-// 3. The Layout Component (with TypeScript types)
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${playfair.variable} ${manrope.variable} bg-rich-black text-soft-cream`}>
-        <SmoothScroll>
-          {children}
-        </SmoothScroll>
+      {/* suppressHydrationWarning={true} fixes the "attribute mismatch" error 
+        caused by browser extensions or font loading differences.
+      */}
+      <body
+        className={`${playfair.variable} ${manrope.variable}`}
+        suppressHydrationWarning={true}
+      >
+        <Cursor /> {/* The mouse tracker sits here, above everything else */}
+        {children}
       </body>
     </html>
   );

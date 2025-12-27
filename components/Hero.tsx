@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useRef } from 'react'
+import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -7,7 +8,14 @@ gsap.registerPlugin(ScrollTrigger)
 
 export default function Hero() {
   const container = useRef<HTMLDivElement>(null)
-  const title = useRef<HTMLHeadingElement>(null)
+  
+  // Create refs for Wrappers (Entrance) and Elements (Scroll)
+  const titleWrapper = useRef<HTMLDivElement>(null)
+  const titleText = useRef<HTMLHeadingElement>(null)
+  
+  const imageWrapper = useRef<HTMLDivElement>(null)
+  const imageElement = useRef<HTMLDivElement>(null)
+  
   const subTitle = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -15,29 +23,47 @@ export default function Hero() {
       
       const tl = gsap.timeline()
       
-      // 1. Main Title Animation
-      tl.fromTo(title.current, 
+      // --- 1. ENTRANCE ANIMATION (Targets the Wrappers) ---
+      tl
+      .fromTo(titleWrapper.current, 
         { y: 100, opacity: 0 },
         { y: 0, opacity: 1, duration: 1.5, ease: "power4.out" }
       )
-      
-      // 2. Subtitle Animation
+      .fromTo(imageWrapper.current,
+        { scale: 0.8, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 1.5, ease: "power3.out" },
+        "-=1.2"
+      )
       .fromTo(subTitle.current,
         { y: 20, opacity: 0 },
         { y: 0, opacity: 1, duration: 1, ease: "power3.out" },
         "-=1"
       )
 
-      // 3. Parallax Scroll Effect
-      gsap.to(title.current, {
+      // --- 2. SCROLL PARALLAX (Targets the Inner Elements) ---
+      // This ensures no conflict with the entrance animation
+      
+      // Text moves DOWN (Sinks) - Kept opacity high so it doesn't disappear
+      gsap.to(titleText.current, {
         scrollTrigger: {
           trigger: container.current,
           start: "top top",
           end: "bottom top",
           scrub: true
         },
-        y: -150, 
-        opacity: 0.5
+        y: 200, 
+        opacity: 0.8 // Only slight fade, ensuring visibility
+      })
+
+      // Image moves UP (Floats)
+      gsap.to(imageElement.current, {
+        scrollTrigger: {
+          trigger: container.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true
+        },
+        y: -100, 
       })
 
     }, container)
@@ -46,32 +72,39 @@ export default function Hero() {
   }, [])
 
   return (
-    <section ref={container} className="relative h-screen w-full flex flex-col items-center justify-center bg-rich-black overflow-hidden">
+    <section ref={container} className="relative h-screen w-full flex flex-col items-center justify-center bg-rich-black overflow-hidden perspective-1000">
       
-      {/* --- BACKGROUND TEXTURE --- */}
+      {/* Background Texture */}
       <div className="absolute inset-0 opacity-20 pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
 
-      {/* --- MAIN CONTENT --- */}
-      <div className="z-10 text-center px-4">
-        
-        {/* The Display Name: ck0xDev (Solid ClamWhite) */}
-        <h1 ref={title} className="font-serif text-[15vw] leading-[0.85] text-[#f8f8f8] tracking-tighter">
-          ck0x<span className="italic">Dev</span>
+      {/* LAYER 1: HUGE TEXT (Behind) */}
+      {/* Wrapper handles Entrance, H1 handles Scroll */}
+      <div ref={titleWrapper} className="absolute z-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center">
+        <h1 ref={titleText} className="font-serif text-[18vw] leading-[0.8] text-[#f8f8f8] tracking-tighter opacity-100 whitespace-nowrap">
+          ck0x<span className="italic text-gray-500">Dev</span>
         </h1>
-
-        {/* The Subtext */}
-        <div ref={subTitle} className="mt-12 flex flex-col items-center gap-2">
-          <p className="font-sans text-xs md:text-sm tracking-[0.4em] uppercase text-[#f8f8f8]/80">
-            Immersive Web Experience
-          </p>
-          <div className="h-[1px] w-24 bg-[#f8f8f8] mt-6 opacity-50"></div>
-        </div>
-
       </div>
 
-      {/* --- DECORATIVE GEOMETRY --- */}
-      <div className="absolute top-1/4 -left-20 w-96 h-96 border border-white/5 rounded-full blur-[1px]"></div>
-      <div className="absolute bottom-1/4 -right-20 w-[30rem] h-[30rem] border border-white/5 rounded-full blur-[2px]"></div>
+      {/* LAYER 2: MAIN IMAGE (Center) */}
+      <div ref={imageWrapper} className="relative z-10 w-[300px] md:w-[400px] aspect-[3/4]">
+        <div ref={imageElement} className="relative w-full h-full overflow-hidden rounded-2xl">
+            <Image 
+                src="/hero-avatar.png"
+                alt="CK Avatar"
+                fill
+                className="object-cover object-center opacity-100"
+                priority
+            />
+        </div>
+      </div>
+
+      {/* LAYER 3: SUBTEXT (Front) */}
+      <div ref={subTitle} className="relative z-20 mt-8 flex flex-col items-center gap-2 mix-blend-difference">
+        <p className="font-sans text-xs md:text-sm tracking-[0.4em] uppercase text-[#f8f8f8]/80">
+          Immersive Web Experience
+        </p>
+        <div className="h-[1px] w-24 bg-[#f8f8f8] mt-6 opacity-50"></div>
+      </div>
     
     </section>
   )
