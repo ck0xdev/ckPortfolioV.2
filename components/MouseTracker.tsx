@@ -3,49 +3,41 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 
 export default function MouseTracker() {
-  const cursorRef = useRef<HTMLDivElement>(null)
-  const followerRef = useRef<HTMLDivElement>(null)
+  const circleRef = useRef(null)
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const xTo = gsap.quickTo(followerRef.current, "x", { duration: 0.6, ease: "power3" })
-      const yTo = gsap.quickTo(followerRef.current, "y", { duration: 0.6, ease: "power3" })
-      
-      const xToCursor = gsap.quickTo(cursorRef.current, "x", { duration: 0.1, ease: "power3" })
-      const yToCursor = gsap.quickTo(cursorRef.current, "y", { duration: 0.1, ease: "power3" })
+    // 1. Initial Position: Center it mathematically so the cursor is in the middle of the 60px circle
+    gsap.set(circleRef.current, { xPercent: -50, yPercent: -50 })
 
-      window.addEventListener("mousemove", (e) => {
-        // The main dot follows instantly (or very fast)
-        xToCursor(e.clientX)
-        yToCursor(e.clientY)
-        
-        // The outer ring follows with a "lag" (duration 0.6)
-        xTo(e.clientX)
-        yTo(e.clientY)
-      })
-    })
+    // 2. Setup Animation: A slight delay (duration: 0.3) makes it feel "magnetic"
+    const xTo = gsap.quickTo(circleRef.current, "x", { duration: 0.3, ease: "power3" })
+    const yTo = gsap.quickTo(circleRef.current, "y", { duration: 0.3, ease: "power3" })
 
-    return () => {
-      ctx.revert()
-      window.removeEventListener("mousemove", () => {})
+    // 3. Move Listener
+    const move = (e: MouseEvent) => {
+      xTo(e.clientX)
+      yTo(e.clientY)
     }
+
+    window.addEventListener("mousemove", move)
+    return () => window.removeEventListener("mousemove", move)
   }, [])
 
   return (
-    <div className="pointer-events-none fixed top-0 left-0 z-[9999] mix-blend-difference">
-      
-      {/* 1. The Center Dot (Fast) */}
-      <div 
-        ref={cursorRef}
-        className="absolute w-3 h-3 bg-white rounded-full -translate-x-1/2 -translate-y-1/2"
-      />
-
-      {/* 2. The Outer Ring (Slow/Laggy) */}
-      <div 
-        ref={followerRef}
-        className="absolute w-12 h-12 border border-white rounded-full -translate-x-1/2 -translate-y-1/2 opacity-50"
-      />
-      
-    </div>
+    <div 
+      ref={circleRef}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '60px',        // 60x60 Size as requested
+        height: '60px',
+        backgroundColor: 'white',
+        borderRadius: '50%',
+        pointerEvents: 'none', // Lets you click through the circle
+        mixBlendMode: 'difference', // This makes the text turn black/inverted
+        zIndex: 9999
+      }}
+    />
   )
 }
