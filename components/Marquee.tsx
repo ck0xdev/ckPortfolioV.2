@@ -53,7 +53,7 @@ const SliderRow = ({ direction }: { direction: number }) => {
 // The Text Content
 const Phrase = forwardRef<HTMLDivElement, {}>((props, ref) => {
   return (
-    <div ref={ref} className="flex items-center gap-[10vw] px-[5vw]">
+    <div ref={ref} className="flex items-center gap-[2vw] px-[3vw]">
       <span className="text-[8vw] font-serif text-white/10 uppercase leading-none">
         Front-End Developer
       </span>
