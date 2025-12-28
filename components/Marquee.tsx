@@ -66,6 +66,9 @@ const Phrase = forwardRef<HTMLDivElement, {}>((props, ref) => {
         Creative Coder
       </span>
       <span className="text-[2vw] text-luxury-gold">✦</span>
+      <span className="text-[8vw] font-serif text-white/10 uppercase leading-none">
+        Graphics Designer
+      </span>
     </div>
   )
 })
