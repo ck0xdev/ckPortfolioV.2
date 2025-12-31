@@ -1,35 +1,56 @@
 // File: app/page.tsx
+'use client'
+import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Hero from "@/components/Hero";
-import Marquee from "@/components/Marquee";
 import About from "@/components/About";
-import Work from "@/components/Work";         
-import Experience from "@/components/Experience"; 
-import Certificates from "@/components/Certificates"; 
+import Work from "@/components/Work";
+import Experience from "@/components/Experience";
 import Contact from "@/components/Contact";
-// import Preloader from "@/components/Preloader"; // Don't forget this import!
+import Cursor from "@/components/Cursor";
+import Preloader from "@/components/Preloader";
+
+gsap.registerPlugin(ScrollTrigger)
 
 export default function Home() {
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const sections = gsap.utils.toArray(".panel") as HTMLElement[]
+      
+      gsap.to(sections, {
+        xPercent: -100 * (sections.length - 1),
+        ease: "none",
+        scrollTrigger: {
+          trigger: wrapperRef.current,
+          pin: true,
+          scrub: 1,
+          snap: 1 / (sections.length - 1),
+          end: () => "+=" + containerRef.current!.offsetWidth
+        }
+      })
+    }, wrapperRef)
+
+    return () => ctx.revert()
+  }, [])
+
   return (
-    // FIX 1: "block" is required for GSAP Pinning to work correctly.
-    // "flex flex-col" causes the pinned sections to collapse.
-    <main className="relative block w-full min-h-screen bg-rich-black">
+    <main className="overflow-hidden bg-rich-black text-soft-cream">
+      <Preloader />
+      <Cursor />
       
-      {/* <Preloader /> */}
-
-      <Hero />
-      
-      {/* FIX 2: Added a Wrapper with padding (py-32) to create space */}
-      {/* py-32 = 8rem = 128px of space above and below the slider */}
-      <div className="w-full py-32 relative z-10 bg-rich-black">
-        <Marquee />
+      <div ref={wrapperRef} className="overscroll-none">
+        <div ref={containerRef} className="flex w-[500vw] h-screen">
+          <div className="panel w-screen h-screen"><Hero /></div>
+          <div className="panel w-screen h-screen"><About /></div>
+          <div className="panel w-screen h-screen"><Work /></div>
+          <div className="panel w-screen h-screen"><Experience /></div>
+          <div className="panel w-screen h-screen"><Contact /></div>
+        </div>
       </div>
-
-      <About />
-      <Work />
-      <Experience />
-      <Certificates />
-      <Contact />
-      
     </main>
   );
 }

@@ -1,35 +1,36 @@
-// File: app/components/Cursor.jsx
-"use client";
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
+// File: components/Cursor.jsx
+'use client'
+import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
 
 export default function Cursor() {
-  const cursorRef = useRef(null);
+  const cursorRef = useRef(null)
+  const textRef = useRef(null)
 
   useEffect(() => {
-    // Safety check: ensure element exists
-    if (!cursorRef.current) return;
+    const cursor = cursorRef.current
+    const text = textRef.current
+    
+    const xTo = gsap.quickTo(cursor, "x", { duration: 0.1, ease: "power3" })
+    const yTo = gsap.quickTo(cursor, "y", { duration: 0.1, ease: "power3" })
+    
+    const xToText = gsap.quickTo(text, "x", { duration: 0.5, ease: "power3" })
+    const yToText = gsap.quickTo(text, "y", { duration: 0.5, ease: "power3" })
 
-    const cursor = cursorRef.current;
+    window.addEventListener("mousemove", (e) => {
+      xTo(e.clientX)
+      yTo(e.clientY)
+      xToText(e.clientX)
+      yToText(e.clientY)
+    })
+  }, [])
 
-    // Function to move the cursor
-    const moveCursor = (e) => {
-      gsap.to(cursor, {
-        x: e.clientX,
-        y: e.clientY,
-        duration: 0.1, 
-        ease: "power2.out",
-      });
-    };
-
-    // Add listener
-    window.addEventListener("mousemove", moveCursor);
-
-    // Cleanup listener on unmount
-    return () => {
-      window.removeEventListener("mousemove", moveCursor);
-    };
-  }, []);
-
-  return <div ref={cursorRef} className="cursor-dot" />;
+  return (
+    <>
+      <div ref={cursorRef} className="fixed top-0 left-0 w-3 h-3 bg-white rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2 mix-blend-difference" />
+      <div ref={textRef} className="fixed top-0 left-0 pointer-events-none z-[9998] ml-6 mt-6">
+        <span className="font-sans text-xs tracking-widest text-luxury-gold uppercase">Scroll</span>
+      </div>
+    </>
+  )
 }

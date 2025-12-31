@@ -1,3 +1,4 @@
+// File: components/Certificates.tsx
 'use client'
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
@@ -14,63 +15,29 @@ const certs = [
 export default function Certificates() {
   const container = useRef(null)
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(".cert-item", 
-        { y: 50, opacity: 0 },
-        { 
-          y: 0, 
-          opacity: 1, 
-          duration: 0.8, 
-          stagger: 0.1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: container.current,
-            start: "top 75%",
-          }
-        }
-      )
-    }, container)
-    return () => ctx.revert()
-  }, [])
-
   return (
-    <section ref={container} className="relative py-32 px-10 md:px-20 bg-rich-black text-soft-cream border-t border-white/5">
-      
-      <div className="flex flex-col md:flex-row gap-20">
-        {/* Title */}
+    <section ref={container} className="relative py-32 px-6 md:px-20 bg-rich-black text-soft-cream">
+      <div className="flex flex-col md:flex-row gap-16">
+        
         <div className="md:w-1/3">
-          <h2 className="font-serif text-4xl md:text-5xl text-soft-cream">
-            Certifications
-          </h2>
-          <p className="mt-4 font-sans text-sm text-gray-500 max-w-xs leading-relaxed">
-            Continuous learning is the core of my growth. Here are the milestones I've achieved.
-          </p>
+           <span className="text-luxury-gold text-xl">✦</span>
+           <h2 className="font-serif text-4xl mt-4">Certifications</h2>
         </div>
 
-        {/* List */}
-        <div className="md:w-2/3 flex flex-col gap-8">
+        <div className="md:w-2/3 flex flex-col gap-6">
           {certs.map((cert, i) => (
-            <div key={i} className="cert-item group flex flex-col md:flex-row md:items-center justify-between py-8 border-b border-white/10 hover:border-luxury-gold/50 transition-colors duration-500">
-              
-              <div>
-                <h3 className="font-serif text-2xl md:text-3xl text-gray-200 group-hover:text-soft-cream transition-colors">
-                  {cert.name}
-                </h3>
-                <p className="font-sans text-sm text-gray-500 mt-2 uppercase tracking-widest group-hover:text-luxury-gold transition-colors">
-                  {cert.issuer}
-                </p>
-              </div>
-
-              <div className="mt-4 md:mt-0">
-                <span className="font-sans text-sm text-gray-600 border border-gray-800 px-3 py-1 rounded-full">
-                  {cert.year}
-                </span>
-              </div>
-
+            <div key={i} className="flex items-center justify-between p-6 border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-all duration-300">
+               <div>
+                 <h3 className="font-serif text-xl text-gray-200">{cert.name}</h3>
+                 <p className="font-sans text-xs text-gray-500 uppercase tracking-widest mt-1">{cert.issuer}</p>
+               </div>
+               <span className="font-sans text-xs text-luxury-gold border border-luxury-gold/20 px-2 py-1 rounded">
+                 {cert.year}
+               </span>
             </div>
           ))}
         </div>
+
       </div>
     </section>
   )
