@@ -1,3 +1,4 @@
+// File: components/About.tsx
 'use client'
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
@@ -7,63 +8,58 @@ gsap.registerPlugin(ScrollTrigger)
 
 export default function About() {
   const container = useRef(null)
-  const textRef = useRef(null)
+  const titleRef = useRef(null)
+  const leftTextRef = useRef(null)
+  const rightTextRef = useRef(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      
-      // Animate the text sliding up
-      gsap.fromTo(".about-text", 
-        { y: 50, opacity: 0 },
-        { 
-          y: 0, 
-          opacity: 1, 
-          duration: 1, 
-          stagger: 0.1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: container.current,
-            start: "top 70%", // Animation starts when top of section hits 70% of viewport
-            toggleActions: "play none none reverse"
-          }
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: container.current,
+          start: "top 60%",
+          end: "bottom bottom",
+          toggleActions: "play none none reverse"
         }
-      )
+      })
+
+      tl.from(titleRef.current, { y: 100, opacity: 0, duration: 1.2, ease: "power4.out" })
+      tl.from([leftTextRef.current, rightTextRef.current], {
+        y: 50, opacity: 0, duration: 1, stagger: 0.2, ease: "power3.out"
+      }, "-=0.8")
 
     }, container)
-
     return () => ctx.revert()
   }, [])
 
   return (
-    <section ref={container} className="relative w-full py-32 px-10 md:px-20 bg-rich-black text-soft-cream overflow-hidden">
-      
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-20">
+    <section ref={container} className="relative w-full min-h-screen flex flex-col justify-center bg-rich-black text-soft-cream px-6 md:px-12 z-10">
+      <div className="w-full max-w-[90vw] mx-auto flex flex-col gap-16 md:gap-24">
         
-        {/* LEFT COLUMN: Label */}
-        <div className="md:w-1/4">
-          <p className="about-text font-sans text-xs tracking-[0.2em] uppercase text-gray-500 mb-4">
-            ( 001 — About )
-          </p>
-          <div className="about-text h-[1px] w-full bg-white/10 origin-left"></div>
+        {/* TITLE */}
+        <div className="border-b border-white/10 pb-8 md:pb-12">
+            <h2 ref={titleRef} className="font-serif text-[12vw] leading-[0.8] text-white tracking-tight">
+               About <span className="italic text-gray-600 font-light">Me.</span>
+            </h2>
         </div>
 
-        {/* RIGHT COLUMN: The Content */}
-        <div className="md:w-3/4 flex flex-col gap-10">
-          
-          {/* Large Headline */}
-          <h3 className="about-text font-serif text-4xl md:text-6xl leading-[1.1] text-soft-cream">
-            I craft immersive digital experiences that merge <span className="text-luxury-gold italic">art</span> with <span className="text-luxury-gold italic">engineering</span>.
-          </h3>
+        {/* CONTENT */}
+        <div className="flex flex-col md:flex-row justify-between gap-12 md:gap-24">
+            
+            {/* LEFT: The Hook (From CV) */}
+            <div ref={leftTextRef} className="md:w-1/2">
+               <h3 className="font-serif text-3xl md:text-4xl lg:text-5xl leading-[1.1] text-gray-200">
+                 Motivated BCA scholar specializing in <span className="text-luxury-gold italic">modern web technologies</span> and AI-assisted workflows.
+               </h3>
+            </div>
 
-          <div className="flex flex-col gap-6 md:w-3/4 ml-auto">
-            <p className="about-text font-sans text-base md:text-lg text-gray-400 leading-relaxed">
-              Based in the digital realm, I specialize in building high-performance web applications using Next.js and WebGL. My work is defined by fluid animations, precise typography, and interaction design that feels natural.
-            </p>
-
-            <p className="about-text font-sans text-base md:text-lg text-gray-400 leading-relaxed">
-              I believe a website shouldn't just display information—it should tell a story. By combining technical depth with aesthetic sensibility, I help brands leave a lasting impression.
-            </p>
-          </div>
+            {/* RIGHT: The Bio (From CV) */}
+            <div ref={rightTextRef} className="md:w-1/3 flex flex-col justify-end pb-2">
+                <p className="font-sans text-base md:text-lg text-gray-500 leading-relaxed font-light">
+                   My approach combines foundational knowledge in Python and JavaScript with the speed of modern AI tools. 
+                   I build responsive, user-friendly websites efficiently and am eager to apply my skills in a challenging internship environment.
+                </p>
+            </div>
 
         </div>
       </div>

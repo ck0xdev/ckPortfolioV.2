@@ -14,17 +14,20 @@ function SmoothScroll({ children }) {
     const lenis = lenisRef.current?.lenis
     if (!lenis) return
 
-    // 1. Tell ScrollTrigger to update whenever Lenis scrolls
+    // 1. Sync ScrollTrigger with Lenis
     lenis.on('scroll', ScrollTrigger.update)
 
-    // 2. We do NOT manually drive the RAF loop here because autoRaf={true} does it.
-    // This prevents the double-loop freeze issue.
+    // 2. Add GSAP ticker (Optional for smoothness)
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000)
+    })
     
-    // Optional: Add lag smoothing to GSAP to prevent jitters during heavy scrolls
+    // 3. Disable lag smoothing to prevent visual jumps
     gsap.ticker.lagSmoothing(0)
 
     return () => {
       lenis.off('scroll', ScrollTrigger.update)
+      gsap.ticker.remove((time) => lenis.raf(time * 1000))
     }
   }, [])
 
@@ -32,7 +35,7 @@ function SmoothScroll({ children }) {
     <ReactLenis 
       root 
       ref={lenisRef} 
-      autoRaf={true} // <--- KEEPS SCROLLING ALIVE
+      autoRaf={true} // <--- MUST BE TRUE for consistent scrolling
       options={{ lerp: 0.1, duration: 1.5, smoothTouch: true }}
     >
       {children}

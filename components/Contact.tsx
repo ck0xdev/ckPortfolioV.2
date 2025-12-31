@@ -1,3 +1,4 @@
+// File: components/Contact.tsx
 'use client'
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
@@ -13,22 +14,15 @@ export default function Contact() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      
-      // Line Draw
       gsap.fromTo(lineRef.current, { scaleX: 0 }, { 
           scaleX: 1, duration: 1.5, ease: "power3.out",
           scrollTrigger: { trigger: container.current, start: "top 70%" }
       })
-      
-      // Text Reveal
       gsap.fromTo(titleRef.current, { y: 150, opacity: 0 }, { 
           y: 0, opacity: 1, duration: 1.2, ease: "power3.out",
           scrollTrigger: { trigger: container.current, start: "top 60%" }
       })
-
-      // Email Hover Animation (Magnetic Pull)
       const emailEl = emailRef.current as unknown as HTMLElement
-      
       if(emailEl) {
         emailEl.addEventListener('mouseenter', () => {
             gsap.to(emailEl, { scale: 1.1, color: "#d4af37", duration: 0.3 })
@@ -37,7 +31,6 @@ export default function Contact() {
             gsap.to(emailEl, { scale: 1, color: "#ffffff", duration: 0.3 })
         })
       }
-
     }, container)
     return () => ctx.revert()
   }, [])
@@ -50,35 +43,40 @@ export default function Contact() {
 
       <div className="flex flex-col md:flex-row justify-between items-start gap-20">
         
-        {/* Massive Call To Action */}
+        {/* CTA */}
         <div className="md:w-1/2 overflow-hidden">
           <h2 ref={titleRef} className="font-serif text-[12vw] leading-[0.85] text-soft-cream">
-            Let's <br /> <span className="text-gray-700 italic">Create</span>.
+            Let's <br /> <span className="text-gray-700 italic">Talk</span>.
           </h2>
         </div>
 
-        {/* Info Column */}
+        {/* INFO */}
         <div className="md:w-1/3 flex flex-col gap-16 mt-10 md:mt-4">
           
           <div className="flex flex-col gap-6">
             <p className="font-sans text-xs tracking-[0.2em] text-gray-500 uppercase">( Get in Touch )</p>
+            {/* UPDATED EMAIL FROM CV */}
             <a 
               ref={emailRef} 
-              href="mailto:hello@ck0x.dev" 
-              className="font-serif text-4xl md:text-5xl border-b border-white/10 pb-2 inline-block transition-all origin-left"
+              href="mailto:kukadiyachintan026@gmail.com" 
+              className="font-serif text-3xl md:text-4xl border-b border-white/10 pb-2 inline-block transition-all origin-left break-all"
             >
-              hello@ck0x.dev
+              kukadiyachintan026@gmail.com
             </a>
           </div>
 
           <div className="flex flex-col gap-6">
              <p className="font-sans text-xs tracking-[0.2em] text-gray-500 uppercase">( Socials )</p>
              <div className="flex gap-8 font-sans text-sm text-gray-300 uppercase tracking-widest">
-               {['LinkedIn', 'GitHub', 'Twitter', 'Instagram'].map(social => (
-                 <a key={social} href="#" className="hover:text-luxury-gold hover:underline transition-colors decoration-luxury-gold/50 underline-offset-4">
-                   {social}
-                 </a>
-               ))}
+               <a href="https://github.com/ck0xdev" target="_blank" className="hover:text-luxury-gold hover:underline transition-colors decoration-luxury-gold/50 underline-offset-4">
+                 GitHub
+               </a>
+               <a href="#" className="hover:text-luxury-gold hover:underline transition-colors decoration-luxury-gold/50 underline-offset-4">
+                 LinkedIn
+               </a>
+               <a href="#" className="hover:text-luxury-gold hover:underline transition-colors decoration-luxury-gold/50 underline-offset-4">
+                 Twitter
+               </a>
              </div>
           </div>
 

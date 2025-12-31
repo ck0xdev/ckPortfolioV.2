@@ -19,9 +19,11 @@ export default function Preloader() {
 
   useEffect(() => {
     // 1. Lock Scroll & Set Dimensions
-    document.body.style.overflow = 'hidden'
-    document.body.style.cursor = 'none'
-    setDimension({ width: window.innerWidth, height: window.innerHeight })
+    if (typeof window !== 'undefined') {
+      document.body.style.overflow = 'hidden'
+      document.body.style.cursor = 'none'
+      setDimension({ width: window.innerWidth, height: window.innerHeight })
+    }
 
     const ctx = gsap.context(() => {
       // Initial text reveal
@@ -39,7 +41,7 @@ export default function Preloader() {
           }
           return prev + 1
         })
-      }, 160) // 4 seconds total cycle
+      }, 160) 
 
     }, container)
 
@@ -51,44 +53,34 @@ export default function Preloader() {
     const h = window.innerHeight
 
     tl
-    // 1. Shrink Text into the Dot
+    // 1. Shrink Text
     .to(textRef.current, {
-      scale: 0,
-      opacity: 0,
-      duration: 0.5,
-      ease: "power3.in"
+      scale: 0, opacity: 0, duration: 0.5, ease: "power3.in"
     })
     
-    // 2. Show Dot (Scale Up)
+    // 2. Show Dot
     .to(dotRef.current, {
-      scale: 1,
-      opacity: 1,
-      duration: 0.3,
-      ease: "back.out(1.7)"
+      scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.7)"
     })
     
-    // 3. Drop Dot (FASTER NOW: 0.5s)
+    // 3. Drop Dot (0.5s Duration)
     .to(dotRef.current, {
-      y: h / 2 + 100, // Drop past the screen edge
-      duration: 0.5,  // <--- CHANGED TO 0.5s
+      y: h / 2 + 100, 
+      duration: 0.5, // <--- FIXED: 0.5s
       ease: "bounce.out"
     })
 
-    // 4. Draw Borders (Thick 25px Lines)
+    // 4. Draw Borders
     .to(".border-path", {
-      strokeDashoffset: 0, 
-      duration: 4, 
-      ease: "power2.inOut" 
+      strokeDashoffset: 0, duration: 4, ease: "power2.inOut" 
     })
 
-    // 5. Fill Screen White (Flash)
+    // 5. Fill Screen White
     .to(container.current, {
-      backgroundColor: "#ffffff",
-      duration: 0.5,
-      ease: "power1.in"
+      backgroundColor: "#ffffff", duration: 0.5, ease: "power1.in"
     }, "-=0.5") 
 
-    // 6. Reveal Site (Iris Close)
+    // 6. Reveal Site
     .to(container.current, {
       clipPath: "circle(0% at 50% 50%)",
       duration: 1.5,
@@ -107,7 +99,6 @@ export default function Preloader() {
   const h = dimension.height
   const r = 20 
 
-  // Path: Bottom-Center -> Corner -> Top-Center
   const leftPath = `M ${w/2} ${h-pad} L ${pad+r} ${h-pad} Q ${pad} ${h-pad} ${pad} ${h-pad-r} L ${pad} ${pad+r} Q ${pad} ${pad} ${pad+r} ${pad} L ${w/2} ${pad}`
   const rightPath = `M ${w/2} ${h-pad} L ${w-pad-r} ${h-pad} Q ${w-pad} ${h-pad} ${w-pad} ${h-pad-r} L ${w-pad} ${pad+r} Q ${w-pad} ${pad} ${w-pad-r} ${pad} L ${w/2} ${pad}`
 
@@ -117,43 +108,17 @@ export default function Preloader() {
       className="fixed top-0 left-0 w-screen h-screen z-[9999] flex items-center justify-center bg-[#0a0a0a] text-[#f5f5f0] overflow-hidden visible opacity-100"
       style={{ clipPath: "circle(150% at 50% 50%)" }}
     >
-      
-      {/* 1. TEXT */}
       <h1 ref={textRef} className="font-serif text-5xl md:text-7xl tracking-wider flex items-center gap-4 absolute opacity-0 z-10">
         <span className="w-3 h-3 bg-white rounded-full inline-block"></span>
         {words[index]}
       </h1>
 
-      {/* 2. THE DOT (Centered) */}
-      <div 
-        ref={dotRef} 
-        className="absolute w-4 h-4 bg-white rounded-full opacity-0 scale-0 z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-      ></div>
+      <div ref={dotRef} className="absolute w-4 h-4 bg-white rounded-full opacity-0 scale-0 z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
 
-      {/* 3. SVG BORDERS */}
       <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
-        <path 
-          d={leftPath} 
-          className="border-path"
-          fill="none" 
-          stroke="white" 
-          strokeWidth="25"
-          strokeDasharray={w + h + 200}
-          strokeDashoffset={w + h + 200}
-          strokeLinecap="round"
-        />
-        <path 
-          d={rightPath} 
-          className="border-path"
-          fill="none" 
-          stroke="white" 
-          strokeWidth="25"
-          strokeDasharray={w + h + 200} 
-          strokeDashoffset={w + h + 200}
-          strokeLinecap="round"
-        />
+        <path d={leftPath} className="border-path" fill="none" stroke="white" strokeWidth="25" strokeDasharray={w + h + 200} strokeDashoffset={w + h + 200} strokeLinecap="round" />
+        <path d={rightPath} className="border-path" fill="none" stroke="white" strokeWidth="25" strokeDasharray={w + h + 200} strokeDashoffset={w + h + 200} strokeLinecap="round" />
       </svg>
-
     </div>
   )
 }
